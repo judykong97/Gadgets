@@ -1,7 +1,7 @@
 /*========================================================*/
 /*
-  LED Candle Demo v0.2c (Non-Candle Starter Version)
-  by Scott Hudson, HCI Institute, CMU 1/10
+  uProject #1 "Let There Be Light"
+  by Judy Kong, HCII CMU. Sep 4, 2019.
   
   This program provides a demo of basic techniques (push button input and
   driving some LEDs) in the form of a simulated candle created with an RGB
@@ -18,12 +18,6 @@
   Operation
   This simplified version of the program just lights the LEDs in a recognizable pattern
   for initial testing.
-  
-  Revisions
-  1/10  Initial version v0.1a
-  1/10  Split into 3 progressively more complete versions v0.2a 
-  1/17  Change pin constants for new part pinout v0.2b 
-  8/19  Change pin constants for another new part pinout v0.2c
 */
 /*========================================================*/
 
