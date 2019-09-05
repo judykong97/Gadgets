@@ -3,10 +3,8 @@
   uProject #1 "Let There Be Light"
   by Judy Kong, HCII CMU. Sep 4, 2019.
   
-  This program provides a demo of basic techniques (push button input and
-  driving some LEDs) in the form of a simulated candle created with an RGB
-  LED.  For this Starter version we just light the LEDs in a fixed pattern 
-  for testing.
+  This is the first micro project assignment for 05-833 Applied Gadgets, 
+  Sensors and Activity Regocnition in HCI. 
   
   Hardware
   This code assumes three LEDs or a combined RBG LED. Each of the LEDs should 
@@ -16,8 +14,11 @@
   the 200-500 ohm range for 5v hardware). 
   
   Operation
-  This simplified version of the program just lights the LEDs in a recognizable pattern
-  for initial testing.
+  This program turns the first LED on for 2 seconds, then the second for 1
+  second, then the third for a 1/2 second, and then the fourth for a 1/4 
+  second. Then flash the four in some customized pattern. Wait 1/2 second, and 
+  then repeat.
+  
 */
 /*========================================================*/
 
@@ -47,6 +48,12 @@ void loop() {
     // digitalWrite(debugPin,HIGH); delay(250); digitalWrite(debugPin,LOW);
     
     // 4 Flash
+    digitalWrite(PinA,HIGH); delay(2000); digitalWrite(PinA,LOW);
+    digitalWrite(PinB,HIGH); delay(1000); digitalWrite(PinB,LOW);
+    digitalWrite(PinC,HIGH); delay(500); digitalWrite(PinC,LOW);
+    digitalWrite(PinD,HIGH); delay(250); digitalWrite(PinD,LOW);
+
+    // Customized flashing
     digitalWrite(PinA,HIGH); delay(2000); digitalWrite(PinA,LOW);
     digitalWrite(PinB,HIGH); delay(1000); digitalWrite(PinB,LOW);
     digitalWrite(PinC,HIGH); delay(500); digitalWrite(PinC,LOW);
