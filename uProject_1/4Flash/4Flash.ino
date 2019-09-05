@@ -7,9 +7,8 @@
   Sensors and Activity Regocnition in HCI. 
   
   Hardware
-  This code assumes three LEDs or a combined RBG LED. Each of the LEDs should 
-  be attached to a separate digital I/O pin (as indicated in the constants 
-  below).  The LEDs are assumed to be connected as common cathode attached to 
+  This code assumes four LEDs attached to digital I/O pin 2, 3, 4, 5.
+  The LEDs are assumed to be connected as common cathode attached to 
   ground and should should each have a current limiting resistor (probably in 
   the 200-500 ohm range for 5v hardware). 
   
