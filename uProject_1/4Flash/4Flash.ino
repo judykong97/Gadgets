@@ -44,6 +44,7 @@ void setup() {
 void loop() {
   
     // (OPTIONAL) Debug Pin
+    
     // digitalWrite(debugPin,HIGH); delay(250); digitalWrite(debugPin,LOW);
     
     // 4 Flash
@@ -52,12 +53,17 @@ void loop() {
     digitalWrite(PinC,HIGH); delay(500); digitalWrite(PinC,LOW);
     digitalWrite(PinD,HIGH); delay(250); digitalWrite(PinD,LOW);
 
+    // Wait for a bit
+    delay(500);
+
     // Customized flashing
-    digitalWrite(PinA,HIGH); delay(2000); digitalWrite(PinA,LOW);
-    digitalWrite(PinB,HIGH); delay(1000); digitalWrite(PinB,LOW);
-    digitalWrite(PinC,HIGH); delay(500); digitalWrite(PinC,LOW);
-    digitalWrite(PinD,HIGH); delay(250); digitalWrite(PinD,LOW);
-    
+    digitalWrite(PinA,HIGH); delay(2000);
+    digitalWrite(PinB,HIGH); delay(1000);
+    digitalWrite(PinC,HIGH); delay(500);
+    digitalWrite(PinD,HIGH); delay(250);
+    digitalWrite(PinA,LOW); digitalWrite(PinB,LOW);
+    digitalWrite(PinC,LOW); digitalWrite(PinD,LOW);
+
     // All LEDs are now off, stay dark for 1/2 sec
     delay(500);
     
