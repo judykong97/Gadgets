@@ -61,7 +61,7 @@ void setup() {
   for (int i = 14; i < 22; i++) {
     pinMode(i, OUTPUT);
   }
-   pinMode(debugPin, OUTPUT);
+  pinMode(debugPin, OUTPUT);
 }
 
 /* Main routine (called repeated by from the Arduino framework) */
