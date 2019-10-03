@@ -1,13 +1,30 @@
 /*========================================================*/
 /*
-  Project #1 "An Interactive 8x8 Matrix LED Game: Snake"
+  Project 1 "An Interactive 8x8 Matrix LED Game: Snake"
   by Judy Kong, HCII CMU. Oct 7, 2019.
   
   This is the first class project for 05-833 Applied Gadgets, 
   Sensors and Activity Regocnition in HCI. 
+ 
+  Hardware
+  This code assumes an 8x8 LEDs matrix, with its rows attached to 
+  digital I/O pins 4-11 and its rows attached to digital I/O pins 
+  2, 3 and analog I/O pins A0-A5 (used as digital I/O pins). 
+  Each row should each have a current limiting resistor with 470 ohms. 
+  This code also assumes two push button swtiches attached to digital 
+  I/O pin 12 and 13.
 
+  Operation
+  The snake starts at the middle of the screen moving to the right with
+  a starting length of 4. The user uses the two push buttons to 
+  control the snake to turn left and right to eat the target on the screen.
+  Whenever the snake eats the target, its length grows by 1 and there
+  will be a new target generated. 
+  The user wins if the length of the snake reaches a certain length; 
+  and the snake dies if it crashes into the wall or itself. 
+  
   Reference
-  This code uses part of the configuration in 
+  This code used part of the configuration in 
   https://create.arduino.cc/projecthub/SAnwandter1/programming-8x8-led-matrix-23475a
   
 */
@@ -39,13 +56,13 @@ const byte cols[] = {
   COL_1,COL_2, COL_3, COL_4, COL_5, COL_6, COL_7, COL_8
 };
 
-byte YOU_WIN[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};   // Turn the whole screen on when user wins
-byte GAME_OVER[] = {0x00, 0x00, 0x66, 0x66, 0x18, 0x24, 0x42, 0x00}; // Display a sad face when user loses
+byte YOU_WIN[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};   // turn the whole screen on when user wins
+byte GAME_OVER[] = {0x00, 0x00, 0x66, 0x66, 0x18, 0x24, 0x42, 0x00}; // display a sad face when user loses
 
 const int  switchPinRight = 12;     // pin with the left switch attached
 const int  switchPinLeft = 13;      // pin with the right switch attached
 
-unsigned long seed;                 // Used to generate random target position
+unsigned long seed;                 // used to generate random target position
 
 /*------- Data structures for system state -------*/      
 
