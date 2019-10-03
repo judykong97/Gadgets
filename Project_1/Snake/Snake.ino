@@ -1,11 +1,10 @@
 /*========================================================*/
 /*
-  Project #1 "I'm OK (You're OK)"
-  by Judy Kong, HCII CMU. Oct 1, 2019.
+  Project #1 "An Interactive 8x8 Matrix LED Game: Snake"
+  by Judy Kong, HCII CMU. Oct 7, 2019.
   
-  This is the checkpoint for the first project for 05-833 Applied Gadgets, 
+  This is the first class project for 05-833 Applied Gadgets, 
   Sensors and Activity Regocnition in HCI. 
-  
 
   Reference
   This code uses part of the configuration in 
@@ -40,18 +39,13 @@ const byte cols[] = {
   COL_1,COL_2, COL_3, COL_4, COL_5, COL_6, COL_7, COL_8
 };
 
-byte O[] = {0x7E, 0xE7, 0xC3, 0xC3, 0xC3, 0xC3, 0xE7, 0x7E};
-byte K[] = {0x63, 0x66, 0x6C, 0x78, 0x6C, 0x66, 0x63, 0x61};
-byte YOU_WIN[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-byte GAME_OVER[] = {0x00, 0x00, 0x66, 0x66, 0x18, 0x24, 0x42, 0x00};
+byte YOU_WIN[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};   // Turn the whole screen on when user wins
+byte GAME_OVER[] = {0x00, 0x00, 0x66, 0x66, 0x18, 0x24, 0x42, 0x00}; // Display a sad face when user loses
 
-const int  switchPinRight = 12;     // pin with switch attached
-const int  switchPinLeft = 13;      // pin with switch attached
-const byte debugPin = 13;           // pin that we put debug output on (set to 255 to disable)
-                                    // (most Arduino's have a built in LED on pin 13...)
+const int  switchPinRight = 12;     // pin with the left switch attached
+const int  switchPinLeft = 13;      // pin with the right switch attached
 
-unsigned long seed;
-int timeCount;
+unsigned long seed;                 // Used to generate random target position
 
 /*------- Data structures for system state -------*/      
 
@@ -78,31 +72,33 @@ void initSwitchTrack(struct switchTracker &sw, int swPin) {
 unsigned int flickDur = 500;     // duration in msec
 
 /*------- Global system state -------*/
-const int winningThreshold = 20;
-const byte TURN_LEFT = 0;         // Turn left
-const byte TURN_RIGHT = 1;        // Turn right
-const byte LEFT = 0;
-const byte UP = 1;
-const byte RIGHT = 2;
-const byte DOWN = 3;
-const byte RUNNING = 0;
-const byte WON = 1;
-const byte DEAD = 2;
-byte currConfig[] = {0x00, 0x00, 0x00, 0xF2, 0x00, 0x00, 0x00, 0x00};
-byte directionMode = RIGHT;
-byte positionI[64];
-byte positionJ[64];
-byte currLength = 4;
-byte currStatus = RUNNING;
-byte targetI = 4;                 // Initial target position i
-byte targetJ = 6;                 // Initial target position j
+const int winningThreshold = 20;  // length of snake to win the game
+const byte TURN_LEFT = 0;         // turn left
+const byte TURN_RIGHT = 1;        // turn right
+const byte LEFT = 0;              // running to the left
+const byte UP = 1;                // running up
+const byte RIGHT = 2;             // running to the right
+const byte DOWN = 3;              // running down
+const byte RUNNING = 0;           // the snake is running
+const byte WON = 1;               // the snake wins
+const byte DEAD = 2;              // the snake is dead
+// 8x8 display of current snake position
+byte currConfig[] = {0x00, 0x00, 0x00, 0xF2, 0x00, 0x00, 0x00, 0x00};   
+byte directionMode = RIGHT;       // current direction the snake is running
+byte positionI[64];               // current position i of the head of snake
+byte positionJ[64];               // current position j of the head of snake
+byte currLength = 4;              // current length of snake
+byte currStatus = RUNNING;        // current status of snake
+byte targetI = 4;                 // initial target position i is in the middle row
+byte targetJ = 6;                 // initial target position j is in the 4th column
 switchTrack switchInputLeft;      // tracking / debounce information for our switch
 switchTrack switchInputRight;     // tracking / debounce information for our 
 
 /*-------------------------------------------*/
-/* Initializization code (run once via call from Arduino framework) */
+/* Initializization code */
 void setup() {
 
+  // Initialize random number generator
   randomSeed(seed);
 
   // Digital Pins
@@ -112,72 +108,83 @@ void setup() {
   }
   
   // Analog Pins
+  // establish direction of pins we are using to drive LEDs
   for (int i = 14; i < 22; i++) {
     pinMode(i, OUTPUT);
   }
 
-  timeCount = 0;
-
-  // Initialize Snake
+  // Initialize snake position
   for (int i = 0; i < 4; i++) {
     positionI[i] = 4;
     positionJ[i] = 4 - i;
   }
   
-  // set up debounce tracker on our switch input pin (sets mode to INPUT)
+  // Set up debounce tracker on our switch input pin (sets mode to INPUT)
   initSwitchTrack(switchInputLeft, switchPinLeft);
   initSwitchTrack(switchInputRight, switchPinRight);
   
 }
 
-/* Main routine (called repeated by from the Arduino framework) */
+/* Main routine */
 void loop() {
-  
+
+  // Proceed after every flickDur milliseconds
   for (int cnt = 0; cnt < flickDur; cnt++) {
 
-    if (currStatus == RUNNING) {
-      drawScreen(currConfig);
+    // Display depending on current status of the snake
+    if (currStatus == RUNNING) { 
+      drawScreen(currConfig); // display snake position when it's running
     } else if (currStatus == WON) {
-      drawScreen(YOU_WIN);
+      drawScreen(YOU_WIN); // display YOU WIN when user wins
     } else {
-      drawScreen(GAME_OVER);
+      drawScreen(GAME_OVER); // display GAME OVER when snake dies
     }
     
-    // see if the switch has been pressed
+    // See if the switch has been pressed
     if (switchChange(switchInputLeft) && switchInputLeft.switchState == 1 /* pressed */) {
       // Turn left
       directionMode = (directionMode - 1) % 4;
-      // dbgFlash(50);  // debug flash so we know the switch input is working right
       goto done;  
     } else if (switchChange(switchInputRight) && switchInputRight.switchState == 1 /* pressed */) {
       // Turn right
       directionMode = (directionMode + 1) % 4;
-      // dbgFlash(50);  // debug flash so we know the switch input is working right
       goto done;
     }
   }
 
   done:
-  proceed();
-  refresh();
-  target();
+  proceed();      // Let the snake move one pixel forward in its direction
+  refresh();      // Refresh the 8x8 LED matrix display
+  target();       // Check for target and regenerate target if needed
 
 }
 
-void drawScreen(byte buffers[]) { 
+/*-------------------------------------------*/
+/* Turn on the 8x8 LED matrix row by row based on current configuration of the matrix.
+*/
+void drawScreen(byte buffers[]) {
   // Turn on each row in series
   for (byte i = 0; i < 8; i++) {
-    digitalWrite(rows[i], LOW);    //initiate whole row
+    digitalWrite(rows[i], LOW); // initiate whole row
     for (byte j = 0; j < 8; j++) {
       byte currPixel = (buffers[i] >> (7 - j)) & 0x1;
       if (i + 1 == targetI && j + 1 == targetJ) currPixel = 1;
       digitalWrite(cols[j], currPixel); // initiate whole column
-      digitalWrite(cols[j], 0);      // reset whole column
+      digitalWrite(cols[j], 0); // reset whole column
     }
-    digitalWrite(rows[i], HIGH);     // reset whole row
+    digitalWrite(rows[i], HIGH); // reset whole row
   }
 }
 
+/*-------------------------------------------*/
+/* Using a time based debounce, test whether a switch should be considered to have 
+   changed state since the last call to this routine for the switch, and track the 
+   current state of the switch in the given switch tracking structure (sw).  The switch 
+   will be consided to be in a new state only after it has held that state for debounceTime msec 
+   or longer.  sw.switchState will be set to 1 when the switch should be considered pressed 
+   and 0 when it should be considered released. This routine will return true when the 
+   switch is in a new state compared to the last call to this routine, false otherwise.
+*/
 boolean switchChange(struct switchTracker &sw) { 
   
   const long debounceTime = 50; // switch must stay stable this long (in msec) to register
@@ -197,57 +204,89 @@ boolean switchChange(struct switchTracker &sw) {
   return result;
 }
 
+/*-------------------------------------------*/
+/* Let the snake move forward by 1 pixel in its direction. If the snake reaches a certain 
+ * length, the user wins; if the snake crashes into the wall or into itself, then it dies. 
+*/
 void proceed() {
-  for (int pos = currLength - 1; pos >= 1; pos--) { // Move forward by 1 for every pixel
+  
+  // Move forward by 1 for every pixel
+  for (int pos = currLength - 1; pos >= 1; pos--) { 
     positionI[pos] = positionI[pos - 1];
     positionJ[pos] = positionJ[pos - 1];
   }
+  
+  // Set the new head position
   if (directionMode == LEFT) {
-    positionJ[0] = positionJ[0] - 1;
+    positionJ[0] = positionJ[0] - 1; // move to the left
   } else if (directionMode == UP) {
-    positionI[0] = positionI[0] - 1;
+    positionI[0] = positionI[0] - 1; // move up
   } else if (directionMode == RIGHT) {
-    positionJ[0] = positionJ[0] + 1;
+    positionJ[0] = positionJ[0] + 1; // move to the right 
   } else { // assert directionMode == DOWN
-    positionI[0] = positionI[0] + 1;
+    positionI[0] = positionI[0] + 1; // move down
   }
+  
   byte newI = positionI[0];
   byte newJ = positionJ[0];
+  // If the snake eat the target, grow the length of snake by 1
   if (newI == targetI and newJ == targetJ) {
     currLength += 1;
   }
+   // If snake length reaches winning threshold, set the status to WON
   if (currLength == winningThreshold) {
     currStatus = WON;
     return;
   }
+  // If snake crashes into the wall, set the status to DEAD
   if (newI <= 0 or newI >= 9 or newJ <= 0 or newJ >= 9) {
     currStatus = DEAD;
     return;
   }
-  if (positionI[currLength - 1] == newI and positionJ[currLength - 1] == newJ) {
-    currStatus = DEAD;
-    return;
-  }
+//  if (positionI[currLength - 1] == newI and positionJ[currLength - 1] == newJ) {
+//    currStatus = DEAD;
+//    return;
+//  }
 }
 
+/*-------------------------------------------*/
+/* Refresh the 8x8 LED matrix display based on the new snake position
+*/
 void refresh() {
+  
+  // Reset display
   memset(currConfig, 0, sizeof(currConfig));
+  
+  // Set (i, j) of configuration from 0 to 1 if the snake is in the position
   for (int pos = 1; pos < currLength; pos++) {
     byte i = positionI[pos] - 1;
     byte j = positionJ[pos] - 1;
     currConfig[i] = currConfig[i] | (1 << (7 - j));;
   }
+  
   byte i = positionI[0] - 1;
   byte j = positionJ[0] - 1;
+  // Check if the snake crashes into itself
   if ((currConfig[i] >> (7 - j)) & 0x1) {
-    currStatus = DEAD;
+    currStatus = DEAD; // if so, set the status to DEAD
   } else {
-    currConfig[i] = currConfig[i] | (1 << (7 - j));;
+    // if not, set the new head position to 1 in the configuration
+    currConfig[i] = currConfig[i] | (1 << (7 - j));
   }
 }
 
+/*-------------------------------------------*/
+/* Check if the target has been eaten. If so, regenerate the target. 
+ * To make sure the target is on top of the snake, keep regenerating
+ * until the target is at a position of value 0 in the configuration,
+ * meaning that the snake is not in that pixel. 
+*/
 void target() {
+  
+  // If the target is not eaten, no need to regenerate
   if (positionI[0] != targetI or positionJ[0] != targetJ) return;
+
+  // Keeps regenerating until the target is not on the snake
   while ((currConfig[targetI - 1] >> (8 - targetJ)) & 0x1) {
     targetI = random(1, 9);
     targetJ = random(1, 9);
