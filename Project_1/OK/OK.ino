@@ -15,29 +15,29 @@
 /*========================================================*/
 
 /*------- Hardware configuration -------*/
-#define ROW_1 4
-#define ROW_2 5
-#define ROW_3 7
-#define ROW_4 9
-#define ROW_5 8
-#define ROW_6 10
-#define ROW_7 11
-#define ROW_8 6
+#define ROW_1 A5
+#define ROW_2 A4
+#define ROW_3 A2
+#define ROW_4 7
+#define ROW_5 A1
+#define ROW_6 9
+#define ROW_7 8
+#define ROW_8 A3
 
-#define COL_1 A2
-#define COL_2 A0
-#define COL_3 A3
-#define COL_4 A1
-#define COL_5 A5
-#define COL_6 3
-#define COL_7 A4
+#define COL_1 12
+#define COL_2 10
+#define COL_3 5
+#define COL_4 11
+#define COL_5 4
+#define COL_6 6
+#define COL_7 3
 #define COL_8 2
 
 const byte rows[] = {
   ROW_1, ROW_2, ROW_3, ROW_4, ROW_5, ROW_6, ROW_7, ROW_8
 };
 const byte cols[] = {
-  COL_1,COL_2, COL_3, COL_4, COL_5, COL_6, COL_7, COL_8
+  COL_1, COL_2, COL_3, COL_4, COL_5, COL_6, COL_7, COL_8
 };
 
 byte O[] = {0x7E, 0xE7, 0xC3, 0xC3, 0xC3, 0xC3, 0xE7, 0x7E};
@@ -54,7 +54,7 @@ void setup() {
   timeCount = 0;
   // Digital Pins
   // establish direction of pins we are using to drive LEDs 
-  for (int i = 2; i < 12; i++) {
+  for (int i = 2; i < 22; i++) {
     pinMode(i, OUTPUT);
   }
   // Analog Pins
