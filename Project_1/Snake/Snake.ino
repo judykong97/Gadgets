@@ -31,22 +31,22 @@
 /*========================================================*/
 
 /*------- Hardware configuration -------*/
-#define ROW_1 4
-#define ROW_2 5
-#define ROW_3 7
-#define ROW_4 9
-#define ROW_5 8
-#define ROW_6 10
-#define ROW_7 11
-#define ROW_8 6
+#define ROW_1 A5
+#define ROW_2 A4
+#define ROW_3 A2
+#define ROW_4 7
+#define ROW_5 A1
+#define ROW_6 9
+#define ROW_7 8
+#define ROW_8 A3
 
-#define COL_1 A2
-#define COL_2 A0
-#define COL_3 A3
-#define COL_4 A1
-#define COL_5 A5
-#define COL_6 3
-#define COL_7 A4
+#define COL_1 12
+#define COL_2 10
+#define COL_3 5
+#define COL_4 11
+#define COL_5 4
+#define COL_6 6
+#define COL_7 3
 #define COL_8 2
 
 const byte rows[] = {
@@ -59,10 +59,8 @@ const byte cols[] = {
 byte YOU_WIN[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};   // turn the whole screen on when user wins
 byte GAME_OVER[] = {0x00, 0x00, 0x66, 0x66, 0x18, 0x24, 0x42, 0x00}; // display a sad face when user loses
 
-const int  switchPinRight = 12;     // pin with the left switch attached
-const int  switchPinLeft = 13;      // pin with the right switch attached
-
-unsigned long seed;                 // used to generate random target position
+const int  switchPinLeft = 14;      // pin with the left switch attached
+const int  switchPinRight = 13;     // pin with the right switch attached
 
 /*------- Data structures for system state -------*/      
 
@@ -107,7 +105,7 @@ byte positionJ[64];               // current position j of the head of snake
 byte currLength = 4;              // current length of snake
 byte currStatus = RUNNING;        // current status of snake
 byte targetI = 4;                 // initial target position i is in the middle row
-byte targetJ = 6;                 // initial target position j is in the 4th column
+byte targetJ = 7;                 // initial target position j is in the 4th column
 switchTrack switchInputLeft;      // tracking / debounce information for our switch
 switchTrack switchInputRight;     // tracking / debounce information for our 
 
@@ -116,17 +114,17 @@ switchTrack switchInputRight;     // tracking / debounce information for our
 void setup() {
 
   // Initialize random number generator
-  randomSeed(seed);
+  randomSeed(analogRead(0));
 
   // Digital Pins
   // establish direction of pins we are using to drive LEDs 
-  for (int i = 2; i < 12; i++) {
+  for (int i = 2; i < 13; i++) {
     pinMode(i, OUTPUT);
   }
   
   // Analog Pins
   // establish direction of pins we are using to drive LEDs
-  for (int i = 14; i < 22; i++) {
+  for (int i = 15; i < 20; i++) {
     pinMode(i, OUTPUT);
   }
 
@@ -153,8 +151,10 @@ void loop() {
       drawScreen(currConfig); // display snake position when it's running
     } else if (currStatus == WON) {
       drawScreen(YOU_WIN); // display YOU WIN when user wins
+      return; 
     } else {
       drawScreen(GAME_OVER); // display GAME OVER when snake dies
+      return; 
     }
     
     // See if the switch has been pressed
@@ -185,7 +185,8 @@ void drawScreen(byte buffers[]) {
     digitalWrite(rows[i], LOW); // initiate whole row
     for (byte j = 0; j < 8; j++) {
       byte currPixel = (buffers[i] >> (7 - j)) & 0x1;
-      if (i + 1 == targetI && j + 1 == targetJ) currPixel = 1;
+      if (currStatus == RUNNING && i + 1 == targetI && j + 1 == targetJ) 
+        currPixel = 1;
       digitalWrite(cols[j], currPixel); // initiate whole column
       digitalWrite(cols[j], 0); // reset whole column
     }
@@ -204,7 +205,7 @@ void drawScreen(byte buffers[]) {
 */
 boolean switchChange(struct switchTracker &sw) { 
   
-  const long debounceTime = 50; // switch must stay stable this long (in msec) to register
+  const long debounceTime = 10; // switch must stay stable this long (in msec) to register
   boolean result = false; // default to no change until we find out otherwise
 
   int reading = digitalRead(sw.pin); // get the current raw reading from the switch
@@ -270,6 +271,9 @@ void proceed() {
 /* Refresh the 8x8 LED matrix display based on the new snake position
 */
 void refresh() {
+
+  // If the user already wins or the snake is dead, return directly 
+  if (currStatus == WON or currStatus == DEAD) return;
   
   // Reset display
   memset(currConfig, 0, sizeof(currConfig));
@@ -299,6 +303,9 @@ void refresh() {
  * meaning that the snake is not in that pixel. 
 */
 void target() {
+
+  // If the user already wins or the snake is dead, return directly
+  if (currStatus == WON or currStatus == DEAD) return;
   
   // If the target is not eaten, no need to regenerate
   if (positionI[0] != targetI or positionJ[0] != targetJ) return;
