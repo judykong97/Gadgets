@@ -144,7 +144,7 @@ void setup() {
 void loop() {
 
   // Proceed after every flickDur milliseconds
-  // Speeds up as the snake grows longer
+  // Speeds up as the snake grows longer 
   for (int cnt = 0; cnt < flickDur - 20 * currLength; cnt++) {
 
     // Display depending on current status of the snake
