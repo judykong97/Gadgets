@@ -84,10 +84,10 @@ void initSwitchTrack(struct switchTracker &sw, int swPin) {
 }
 
 // Structure representing the color and duration of one flicker segment
-unsigned int flickDur = 500;     // duration in msec
+unsigned int flickDur = 600;     // duration in msec
 
 /*------- Global system state -------*/
-const int winningThreshold = 20;  // length of snake to win the game
+const int winningThreshold = 127;  // length of snake to win the game
 const byte TURN_LEFT = 0;         // turn left
 const byte TURN_RIGHT = 1;        // turn right
 const byte LEFT = 0;              // running to the left
@@ -144,7 +144,8 @@ void setup() {
 void loop() {
 
   // Proceed after every flickDur milliseconds
-  for (int cnt = 0; cnt < flickDur; cnt++) {
+  // Speeds up as the snake grows longer
+  for (int cnt = 0; cnt < flickDur - 20 * currLength; cnt++) {
 
     // Display depending on current status of the snake
     if (currStatus == RUNNING) { 
