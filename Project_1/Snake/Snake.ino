@@ -56,7 +56,7 @@ const byte cols[] = {
   COL_1,COL_2, COL_3, COL_4, COL_5, COL_6, COL_7, COL_8
 };
 
-byte YOU_WIN[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};   // turn the whole screen on when user wins
+byte YOU_WIN[] = {0x00, 0x00, 0x66, 0x66, 0x00, 0x24, 0x18, 0x00};   // turn the whole screen on when user wins
 byte GAME_OVER[] = {0x00, 0x00, 0x66, 0x66, 0x18, 0x24, 0x42, 0x00}; // display a sad face when user loses
 
 const int  switchPinLeft = 14;      // pin with the left switch attached
@@ -87,7 +87,7 @@ void initSwitchTrack(struct switchTracker &sw, int swPin) {
 unsigned int flickDur = 600;     // duration in msec
 
 /*------- Global system state -------*/
-const int winningThreshold = 127;  // length of snake to win the game
+const int winningThreshold = 18;  // length of snake to win the game
 const byte TURN_LEFT = 0;         // turn left
 const byte TURN_RIGHT = 1;        // turn right
 const byte LEFT = 0;              // running to the left
