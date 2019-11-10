@@ -1,7 +1,7 @@
 /*========================================================*/
 /*
   uProject #4 "Blinded by the Light"
-  by Judy Kong, HCII CMU. Sep 16, 2019.
+  by Judy Kong, HCII CMU. Nov 10, 2019.
   
   This is the fourth micro project assignment for 05-833 Applied Gadgets, 
   Sensors and Activity Regocnition in HCI. 
