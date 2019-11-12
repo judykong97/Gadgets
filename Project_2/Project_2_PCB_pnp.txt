@@ -1,0 +1,51 @@
+*Pick And Place List
+*Company=
+*Author=
+*eMail=
+*
+*Project=Project_2_PCB
+*Date=20:16:14
+*CreatedBy=Fritzing 0.9.3b.04.19.5c895d327c44a3114e5fcc9d8260daf0cbb52806
+*
+*
+*Coordinates in mm, always center of component
+*Origin 0/0=Lower left corner of PCB
+*Rotation in degree (0-360, math. pos.)
+*
+*No;Value;Package;X;Y;Rotation;Side;Name
+1;0.1µF;100 mil [THT, multilayer];33.5147;-46.167;-90;Bottom;C4
+2;;THT;43.6747;-37.277;0;Bottom;AREF
+3;;;36.3133;-52.5186;0;Bottom;TXT1
+4;;;30.9746;-49.9771;0;Bottom;Via5
+5;;;48.41;-4.32634;0;Bottom;TXT1
+6;;;41.1499;-47.4134;0;Bottom;Via12
+7;;;23.1122;-4.23462;0;Bottom;TXT1
+8;;;51.278;-4.41411;0;Bottom;TXT1
+9;0.1µF;100 mil [THT, multilayer];71.6147;-38.547;90;Bottom;C3
+10;;;58.8031;-4.50188;0;Bottom;TXT1
+11;10k;THT;10.6547;-49.977;90;Bottom;R1
+12;;;72.5167;-4.4175;0;Bottom;TXT1
+13;;;83.1588;-42.6646;0;Bottom;TXT1
+14;;;18.3181;-49.9091;0;Bottom;Via4
+15;;2x3-ns;56.3747;-48.8745;180;Bottom;ICP
+16;;;38.7352;-4.32803;0;Bottom;TXT1
+17;;THT;79.2347;-51.247;0;Bottom;Breadboard Power
+18;;THT;27.1647;-52.517;-90;Bottom;FTDI
+19;;;35.7758;-4.33142;0;Bottom;TXT1
+20;;;81.418;-47.8611;0;Bottom;TXT1
+21;;;81.426;-53.4373;0;Bottom;TXT1
+22;;;63.9946;-42.3571;0;Bottom;Via10
+23;9V;;80.5047;-44.897;-90;Bottom;Battery
+24;5V;to-92;72.8847;-49.4309;180;Bottom;IC2
+25;;dip;42.3909;-25.9099;-90;Bottom;IC1
+26;;;18.0267;-52.4291;0;Bottom;TXT1
+27;;;48.7546;-44.8971;0;Bottom;Via13
+28;0.1µF;100 mil [THT, multilayer];74.1547;-38.547;90;Bottom;C1
+29;0.33µF;100 mil [THT, electrolytic];80.5047;-39.817;0;Bottom;C2
+30;;THT;47.4847;-1.717;-90;Bottom;Header Pins
+31;;;66.5346;-42.3571;0;Bottom;Via6
+32;;THT;79.2347;-14.417;180;Bottom;Y1
+33;;;59.2911;-42.2628;0;Bottom;Via9
+34;;;56.3746;-39.8171;0;Bottom;Via8
+35;;;66.5346;-49.9771;0;Bottom;Via11
+36;;;61.5715;-4.51035;0;Bottom;TXT1
